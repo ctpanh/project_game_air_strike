@@ -36,43 +36,42 @@ void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
-void refresh_screen(const SDL_Rect& rect, SDL_Renderer* renderer)
+
+bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
-    //Đặt màu đen, xóa toàn bộ màn hình về màu đen
-    SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    SDL_RenderClear(renderer);
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
 
-    SDL_SetRenderDrawColor(renderer,255,255,255,255);
-    SDL_RenderFillRect(renderer,&rect);
-    SDL_RenderPresent(renderer);
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+    return true;
 }
-
-SDL_Texture* loadTexture(SDL_Renderer* renderer, const string &path)
-{
-    SDL_Texture* newTexture = NULL;
-    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-    newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-    SDL_FreeSurface(loadedSurface);
-    return newTexture;
-}
-
-void render_texture(SDL_Texture* texture, SDL_Renderer* renderer, int x, int y)
-{
-	SDL_Rect rect;
-	rect.x = x;
-	rect.y = y;
-	SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
-	SDL_RenderCopy(renderer, texture, NULL, &rect);
-}
-
-void renderTexture(SDL_Texture* texture, SDL_Renderer* renderer, int x, int y, int w, int h)
-{
-	SDL_Rect rect;
-	rect.x = x;
-	rect.y = y;
-    rect.w = w;
-    rect.h = h;
-	SDL_RenderCopy(renderer, texture, NULL, &rect);
-}
-
 }

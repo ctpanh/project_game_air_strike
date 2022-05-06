@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -28,9 +29,6 @@ namespace Utils {
 
     SDL_Texture* loadTexture(SDL_Renderer* renderer, const string &path);
 
-    void render_texture(SDL_Texture* texture, SDL_Renderer* renderer, int x, int y);
-
-    void renderTexture(SDL_Texture* texture, SDL_Renderer* renderer, int x, int y, int w, int h);
-
+    bool checkCollision(SDL_Rect a, SDL_Rect b);
 }
 #endif // SDL_UTILS__H
