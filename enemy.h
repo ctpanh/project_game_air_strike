@@ -4,16 +4,17 @@
 
 class Enemy : public GameObject {
 private:
-    int x;
-    int y;
     bool alive;
     Bullet bullet;
+    vector <Bullet*> bulletList;
 public:
     Enemy();
     Enemy(SDL_Renderer* renderer, int i);
     ~Enemy();
+    void createBullet();
+    void enemyBullet(SDL_Renderer* renderer);
     void dead();
     void update(SDL_Renderer* renderer);
-    bool isKilled();
+    bool isEnemyAlive();
 };
 

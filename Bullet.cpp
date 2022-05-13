@@ -20,6 +20,15 @@ void Bullet::attack() {
     }
 }
 
+void Bullet::enemy_bullet()
+{
+    rect.y += vel;
+    if (rect.y > SCREEN_HEIGHT + rect.h)
+    {
+        isMove = false;
+    }
+}
+
 void Bullet::updateState(bool isMove) {
     this->isMove = isMove;
 }
