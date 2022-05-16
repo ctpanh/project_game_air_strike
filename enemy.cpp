@@ -14,7 +14,7 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::createBullet()
+void Enemy::createBullet(SDL_Renderer* renderer)
 {
     Bullet* b = new Bullet;
     b->setImg(renderer, "Image/bullet.png");
