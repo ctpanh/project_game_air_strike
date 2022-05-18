@@ -7,6 +7,7 @@ Enemy::Enemy()
 
 Enemy::Enemy(SDL_Renderer* renderer,int i)
 {
+    setPos(rand() % (SCREEN_WIDTH - rect.w), -rect.h);
     setImg(renderer, "Image/enemy"+to_string(i)+".png");
 }
 
@@ -17,31 +18,37 @@ Enemy::~Enemy()
 void Enemy::createBullet(SDL_Renderer* renderer)
 {
     Bullet* b = new Bullet;
-    b->setImg(renderer, "Image/bullet.png");
-    b->setPos(rect.x,rect.y);
+    b->setImg(renderer, "Image/bulletEnemy.png");
+    b->setPos(rect.x + rect.w / 2 - 10, rect.y + rect.h);
     b->updateState(true);
+
     bulletList.push_back(b);
 }
 
 void Enemy::enemyBullet(SDL_Renderer* renderer)
 {
-    for (int i = 0; i < bulletList.size(); i++)
+    for(int i = 0; i < bulletList.size(); i++)
     {
-        Bullet* b = bulletList[i];
-        if (b)
+        Bullet* currentEnemyBullet = bulletList.at(i);
+        if(currentEnemyBullet)
         {
-            if (b->is_move())
+            if(currentEnemyBullet->is_move())
             {
-                b->enemy_bullet();
-                b->show(renderer);
+                currentEnemyBullet->show(renderer);
+                currentEnemyBullet->enemy_bullet();
             }
             else
             {
-                b->updateState(true);
-                b->setPos(rect.x, rect.y);
+                currentEnemyBullet->updateState(true);
+                currentEnemyBullet->setPos(rect.x + rect.w / 2 - 10, rect.y + rect.h);
             }
         }
     }
+}
+
+vector<Bullet*> Enemy::getBulletList()
+{
+    return bulletList;
 }
 
 
@@ -54,12 +61,8 @@ void Enemy::update(SDL_Renderer* renderer)
     }
 }
 
-void Enemy::dead()
+void Enemy::resetPos()
 {
-    alive = false;
-}
-
-bool Enemy::isEnemyAlive()
-{
-    return alive;
+    rect.y = - rect.h;
+    rect.x = rand() % (SCREEN_WIDTH - rect.w);
 }

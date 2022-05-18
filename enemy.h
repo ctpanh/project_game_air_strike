@@ -11,10 +11,10 @@ public:
     Enemy();
     Enemy(SDL_Renderer* renderer, int i);
     ~Enemy();
-    void createBullet();
+    void createBullet(SDL_Renderer* renderer);
     void enemyBullet(SDL_Renderer* renderer);
-    void dead();
+    vector<Bullet*> getBulletList();
     void update(SDL_Renderer* renderer);
-    bool isEnemyAlive();
+    void resetPos();
 };
 
