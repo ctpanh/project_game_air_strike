@@ -11,22 +11,14 @@ Text::~Text()
 {
 }
 
-void Text::initText(TTF_Font*& fontText)
+void Text::initText(TTF_Font*& fontText, string text, int fontSize)
 {
-    if (TTF_Init() == -1)
-    {
-        cout << "-1";
-    }
-    fontText = TTF_OpenFont("Text/arial.ttf", 20);
+    str = text;
+    fontText = TTF_OpenFont("Text/joystixmonospace.ttf", fontSize);
     if(fontText == NULL)
     {
         cout << "Lỗi font!\n";
     }
-}
-
-void Text::setText(string text)
-{
-    str = text;
 }
 
 void Text::setColor(const int& type)

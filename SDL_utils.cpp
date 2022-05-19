@@ -25,7 +25,14 @@ void initSDL(SDL_Window* &window, SDL_Renderer* &renderer)
                                               SDL_RENDERER_PRESENTVSYNC);
 
     if (renderer == nullptr) logSDLError(std::cout, "CreateRenderer", true);
-
+    if(Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+    {
+        logSDLError(cout, "Mix_OpenAudio", true);
+    }
+    if (TTF_Init() == -1)
+    {
+        logSDLError(cout, "TTF_Init", true);
+    }
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
@@ -36,6 +43,25 @@ void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
+void refresh_screen(const SDL_Rect& rect, SDL_Renderer* renderer)
+{
+    //Đặt màu đen, xóa toàn bộ màn hình về màu đen
+    SDL_SetRenderDrawColor(renderer,0,0,0,255);
+    SDL_RenderClear(renderer);
+
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
+    SDL_RenderFillRect(renderer,&rect);
+    SDL_RenderPresent(renderer);
+}
+
+SDL_Texture* loadTexture(SDL_Renderer* renderer, const string &path)
+{
+    SDL_Texture* newTexture = NULL;
+    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+    newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+    SDL_FreeSurface(loadedSurface);
+    return newTexture;
+}
 
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
@@ -44,15 +70,18 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
     int topA, topB;
     int bottomA, bottomB;
 
+    //Calculate the sides of rect A
     leftA = a.x;
     rightA = a.x + a.w;
     topA = a.y;
     bottomA = a.y + a.h;
 
+    //Calculate the sides of rect B
     leftB = b.x;
     rightB = b.x + b.w;
     topB = b.y;
     bottomB = b.y + b.h;
+    //If any of the sides from A are outside of B
     if( bottomA <= topB )
     {
         return false;

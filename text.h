@@ -18,8 +18,7 @@ public:
     };
     Text();
     ~Text();
-    void initText(TTF_Font*& fontText);
-    void setText(string text);
+    void initText(TTF_Font*& fontText, string text, int fontSize);
     void setColor(const int& type);
     void creatText(TTF_Font* font, SDL_Renderer* renderer);
 };

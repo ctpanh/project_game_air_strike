@@ -29,18 +29,18 @@ void Enemy::enemyBullet(SDL_Renderer* renderer)
 {
     for(int i = 0; i < bulletList.size(); i++)
     {
-        Bullet* b = bulletList.at[i];
-        if(b)
+        Bullet* currentEnemyBullet = bulletList.at(i);
+        if(currentEnemyBullet)
         {
-            if(b->is_move())
+            if(currentEnemyBullet->is_move())
             {
-                b->show(renderer);
-                b->enemy_bullet();
+                currentEnemyBullet->show(renderer);
+                currentEnemyBullet->enemy_bullet();
             }
             else
             {
-                b->updateState(true);
-                b->setPos(rect.x + rect.w / 2 - 10, rect.y + rect.h);
+                currentEnemyBullet->updateState(true);
+                currentEnemyBullet->setPos(rect.x + rect.w / 2 - 10, rect.y + rect.h);
             }
         }
     }

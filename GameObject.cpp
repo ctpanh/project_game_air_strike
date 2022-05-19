@@ -28,6 +28,13 @@ void GameObject::setImg(SDL_Renderer* renderer, string path){
     img_obj = Utils::loadTexture(renderer, path);
 }
 
+void GameObject::setRect(int w, int h)
+{
+    rect.w = w;
+    rect.h = h;
+}
+
+
 void GameObject::setPos(int x, int y) {
     rect.x = x;
     rect.y = y;

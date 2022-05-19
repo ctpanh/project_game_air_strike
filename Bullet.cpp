@@ -22,7 +22,7 @@ void Bullet::attack() {
 
 void Bullet::enemy_bullet()
 {
-    rect.y += vel;
+    rect.y += vel/2;
     if (rect.y > SCREEN_HEIGHT + rect.h)
     {
         isMove = false;

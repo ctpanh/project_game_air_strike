@@ -14,6 +14,8 @@ public:
 
     void setImg(SDL_Renderer* renderer, string path);
 
+    void setRect(int x, int y);
+
     void setPos(int x, int y);
 
     SDL_Rect getRect();
