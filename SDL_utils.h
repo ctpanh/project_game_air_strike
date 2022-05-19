@@ -36,4 +36,4 @@ namespace Utils {
     bool checkCollision(SDL_Rect a, SDL_Rect b);
 
 }
-#endif // SDL_UTILS_H
+#endif // SDL_UTILS__H
