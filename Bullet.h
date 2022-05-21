@@ -13,7 +13,7 @@ public:
     Bullet();
     ~Bullet();
     void attack();
-    void enemy_bullet();
+    void enemy_bullet(int vel);
     void updateState(bool isMove);
     bool is_move();
 };

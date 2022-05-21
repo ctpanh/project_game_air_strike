@@ -20,7 +20,7 @@ void Bullet::attack() {
     }
 }
 
-void Bullet::enemy_bullet()
+void Bullet::enemy_bullet(int vel)
 {
     rect.y += vel/2;
     if (rect.y > SCREEN_HEIGHT + rect.h)

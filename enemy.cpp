@@ -2,7 +2,6 @@
 
 Enemy::Enemy()
 {
-    alive = true;
 }
 
 Enemy::Enemy(SDL_Renderer* renderer,int i)
@@ -25,7 +24,7 @@ void Enemy::createBullet(SDL_Renderer* renderer)
     bulletList.push_back(b);
 }
 
-void Enemy::enemyBullet(SDL_Renderer* renderer)
+void Enemy::enemyBullet(SDL_Renderer* renderer, int vel)
 {
     for(int i = 0; i < bulletList.size(); i++)
     {
@@ -35,7 +34,7 @@ void Enemy::enemyBullet(SDL_Renderer* renderer)
             if(b->is_move())
             {
                 b->show(renderer);
-                b->enemy_bullet();
+                b->enemy_bullet(vel);
             }
             else
             {
@@ -52,13 +51,10 @@ vector<Bullet*> Enemy::getBulletList()
 }
 
 
-void Enemy::update(SDL_Renderer* renderer)
+void Enemy::update(SDL_Renderer* renderer, int vel)
 {
-    if (alive)
-    {
-        rect.y ++;
-        show(renderer);
-    }
+    rect.y += vel;
+    show(renderer);
 }
 
 void Enemy::resetPos()

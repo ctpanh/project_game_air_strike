@@ -19,7 +19,6 @@ const string WINDOW_TITLE = "Air Strike";
 static SDL_Window* window;
 static SDL_Renderer* renderer;
 static SDL_Event event;
-static bool quit = false;
 static TTF_Font* fontText = NULL;
 
 namespace Utils {
@@ -28,8 +27,6 @@ namespace Utils {
     void initSDL(SDL_Window* &window, SDL_Renderer* &renderer);
 
     void quitSDL(SDL_Window* window, SDL_Renderer* renderer);
-
-    void refresh_screen(const SDL_Rect& rect, SDL_Renderer* renderer);
 
     SDL_Texture* loadTexture(SDL_Renderer* renderer, const string &path);
 

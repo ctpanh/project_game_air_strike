@@ -4,25 +4,60 @@
 #include "enemy.h"
 #include "text.h"
 #include "explosion.h"
+#include "score.h"
+#include "button.h"
 
 using namespace Utils;
+
+void constructor()
+{
+
+}
 
 int main(int argc, char* argv[])
 {
     srand(time(0));
     initSDL(window, renderer);
 
-    SDL_Texture* newTexture = loadTexture(renderer, "Image/bg.png");
+    SDL_Texture* backGround = loadTexture(renderer, "Image/bg.png");
+    // Ve background chinh
+    constructor();
+
+    bool isPlayerAlive = true;
+    bool isMenu = true;
+
+    Plane plane(renderer);
+    vector<Enemy> enemies;
+    vector<Explosion> explosion;
+
+    int score = 0;
+
+    Text text, getScore;
+    getScore.setColor(0);
+    getScore.setRect(100,100);
+    getScore.setPos(SCREEN_WIDTH/2 - getScore.getRect().w/2, SCREEN_HEIGHT/2 - getScore.getRect().h/2);
+
+    Button startGame;
+    startGame.setImg(renderer, "Image/button_play.png");
+    startGame.setPos(SCREEN_WIDTH / 2 - startGame.getRect().w / 2, SCREEN_HEIGHT / 2 - startGame.getRect().h/2);
+    Button highScore;
+    highScore.setImg(renderer, "Image/button_highScore.png");
+    highScore.setPos(SCREEN_WIDTH / 2 - highScore.getRect().w / 2, SCREEN_HEIGHT / 2 + highScore.getRect().h/2 + 10);
+    Button quitGame;
+    quitGame.setImg(renderer, "Image/button_quit.png");
+    quitGame.setPos(SCREEN_WIDTH / 2 - quitGame.getRect().w / 2, SCREEN_HEIGHT / 2 + 3*quitGame.getRect().h/2 + 20);
+    Button turnBack;
+    turnBack.setImg(renderer,"Image/button_back.png");
+    turnBack.setPos(0,0);
 
     GameObject gameOver;
     gameOver.setImg(renderer, "Image/gameOver.png");
     gameOver.setRect(500, 500);
     gameOver.setPos(SCREEN_WIDTH / 2 - gameOver.getRect().w/2, SCREEN_HEIGHT / 3 - gameOver.getRect().h/2);
-
-    Plane plane(renderer);
-    bool isPlayerAlive = true;
-    vector<Enemy> enemies;
-    vector<Explosion> explosion;
+    GameObject logo;
+    logo.setImg(renderer, "Image/logo.png");
+    logo.setRect(300, 300);
+    logo.setPos(SCREEN_WIDTH / 2 - logo.getRect().w / 2, SCREEN_HEIGHT / 2 - 4*startGame.getRect().h + 30);
 
     Mix_Music* music = Mix_LoadMUS("Music/wind.wav");
     Mix_Chunk* expSound = Mix_LoadWAV("Music/awp.wav");
@@ -32,12 +67,6 @@ int main(int argc, char* argv[])
         Explosion exp(renderer, i);
         explosion.push_back(exp);
     }
-    int score = 0;
-
-    Text text, getScore;
-    getScore.setColor(0);
-    getScore.setRect(100,100);
-    getScore.setPos(SCREEN_WIDTH/2 - getScore.getRect().w/2, SCREEN_HEIGHT/2 - getScore.getRect().h/2);
 
     for (int i = 0; i < 3; i++)
     {
@@ -46,112 +75,211 @@ int main(int argc, char* argv[])
         enemies.push_back(enemy);
     }
 
-    while(!quit)
+    while(isMenu)
     {
-        while (isPlayerAlive)
+        SDL_RenderCopy(renderer, backGround, NULL, NULL);
+        Mix_HaltMusic();
+        if(!Mix_PlayingMusic())
         {
-            Mix_HaltMusic();
-            if(!Mix_PlayingMusic())
-            {
-                Mix_PlayMusic(music, -1);
-            }
+            Mix_PlayMusic(music, -1);
+        }
+        logo.show(renderer);
+        startGame.show(renderer);
+        highScore.show(renderer);
+        quitGame.show(renderer);
+        SDL_RenderPresent(renderer);
 
-            while(SDL_PollEvent(&event) != 0)
+        while(SDL_PollEvent(&event))
+        {
+            if(startGame.input(event))
             {
-                if(event.type == SDL_QUIT)
-                {
-                    quit = true;
-                    isPlayerAlive = false;
-                }
+                isPlayerAlive = true;
+                // Tat hien thi chuot tren man hinh
                 SDL_ShowCursor(SDL_DISABLE);
-                plane.move(event);
-            }
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, newTexture, NULL, NULL);
-            plane.update(renderer);
-            for (int i = 0; i < 3; i++)
-            {
-                enemies[i].update(renderer);
-                enemies[i].enemyBullet(renderer);
+                // Van choi moi
+                // Set diem ve 0
+                score = 0;
+                // Delay 0.5s roi vao game
+                SDL_Delay(500);
 
-                if(checkCollision(enemies[i].getRect(), plane.getRect()))
+                plane.setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT*3/4);
+                for (int i = 0; i < 3; i++)
                 {
-                    Mix_PlayChannel(-1, expSound, 0);
-                    vector<Explosion> exp;
-                    exp = explosion;
-                    for (int k = 0; k < 4; k++)
+                    enemies[i].setPos(rand() % (SCREEN_WIDTH - enemies[i].getRect().w), -enemies[i].getRect().h);
+                    vector<Bullet*> enemyBulletList;
+                    enemyBulletList = enemies[i].getBulletList();
+                    for (int j = 0; j < enemyBulletList.size(); j++)
                     {
-                        exp[k].setPos(enemies[i].getRect().x, enemies[i].getRect().y);
-                        exp[k].show(renderer);
-                        SDL_Delay(50);
+                        enemyBulletList[j]->setPos(enemies[i].getRect().x + enemies[i].getRect().w / 2 - 10, enemies[i].getRect().y + enemies[i].getRect().h);
                     }
-                    gameOver.show(renderer);
-                    getScore.initText(fontText, "Score:" + to_string(score),1000);
-                    getScore.creatText(fontText,renderer);
-                    SDL_RenderPresent(renderer);
-                    quit = true;
-                    isPlayerAlive = false;
-                    SDL_ShowCursor(SDL_ENABLE);
-                    SDL_Delay(2000);
-                    break;
                 }
+                // Tro choi chinh
+                int velEnemy = 1;
+                int velBullet = 10;
 
-                vector<Bullet*> enemyBulletList;
-                enemyBulletList = enemies[i].getBulletList();
-                for (int j = 0; j < enemyBulletList.size(); j++)
+                while(isPlayerAlive)
                 {
-                    if(checkCollision(enemyBulletList[j]->getRect(),plane.getRect()))
+                    // Delay 10 ms
+                    SDL_Delay(1);
+
+                    // Trong khi co su kien
+                    while(SDL_PollEvent(&event))
                     {
-                        Mix_PlayChannel(-1, expSound, 0);
-                        vector<Explosion> exp;
-                        exp = explosion;
-                        for (int k = 0; k < 4; k++)
+                        if(event.type == SDL_QUIT)
                         {
-                            exp[k].setPos(plane.getRect().x, plane.getRect().y);
-                            exp[k].show(renderer);
-                            SDL_Delay(50);
+                            isPlayerAlive = false;
+
+                            isMenu = false;
+                            break;
+                        }
+                        plane.move(event);
+                    }
+                    SDL_RenderCopy(renderer, backGround, NULL, NULL);
+                    plane.update(renderer);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        enemies[i].update(renderer,velEnemy);
+                        enemies[i].enemyBullet(renderer, velBullet);
+
+                        if(checkCollision(enemies[i].getRect(), plane.getRect()))
+                        {
+                            Mix_PlayChannel(-1, expSound, 0);
+                            vector<Explosion> exp;
+                            exp = explosion;
+                            for (int k = 0; k < 4; k++)
+                            {
+                                exp[k].setPos(enemies[i].getRect().x, enemies[i].getRect().y);
+                                exp[k].show(renderer);
+                                SDL_Delay(50);
+                            }
+                            gameOver.show(renderer);
+                            getScore.initText(fontText, "Score:" + to_string(score),1000);
+                            getScore.creatText(fontText,renderer);
+                            SDL_RenderPresent(renderer);
+                            isMenu = true;
+                            isPlayerAlive = false;
+                            SDL_ShowCursor(SDL_ENABLE);
+                            SDL_Delay(1000);
+                            break;
                         }
 
-                        gameOver.show(renderer);
-                        getScore.initText(fontText, "Score:" + to_string(score),1000);
-                        getScore.creatText(fontText,renderer);
-                        SDL_RenderPresent(renderer);
-                        quit = true;
-                        isPlayerAlive = false;
-                        SDL_ShowCursor(SDL_ENABLE);
-                        SDL_Delay(2000);
-                        break;
+                        vector<Bullet*> enemyBulletList;
+                        enemyBulletList = enemies[i].getBulletList();
+                        for (int j = 0; j < enemyBulletList.size(); j++)
+                        {
+                            if(checkCollision(enemyBulletList[j]->getRect(),plane.getRect()))
+                            {
+                                Mix_PlayChannel(-1, expSound, 0);
+                                vector<Explosion> exp;
+                                exp = explosion;
+                                for (int k = 0; k < 4; k++)
+                                {
+                                    exp[k].setPos(plane.getRect().x, plane.getRect().y);
+                                    exp[k].show(renderer);
+                                    SDL_Delay(50);
+                                }
+
+                                gameOver.show(renderer);
+                                getScore.initText(fontText, "Score:" + to_string(score),1000);
+                                getScore.creatText(fontText,renderer);
+                                SDL_RenderPresent(renderer);
+                                isMenu = true;
+                                isPlayerAlive = false;
+                                SDL_ShowCursor(SDL_ENABLE);
+                                SDL_Delay(1000);
+                                break;
+                            }
+                        }
+                        if((checkCollision(enemies[i].getRect(), plane.getRectBullet())))
+                        {
+                            Mix_PlayChannel(-1, expSound, 0);
+                            plane.clearBullet();
+                            vector<Explosion> exp;
+                            exp = explosion;
+                            for (int k = 0; k < 4; k++)
+                            {
+                                exp[k].setPos(enemies[i].getRect().x, enemies[i].getRect().y);
+                                exp[k].show(renderer);
+                            }
+                            score ++;
+                            enemies[i].resetPos();
+                            break;
+                        }
+                        if (enemies[i].getRect().y > SCREEN_HEIGHT)
+                        {
+                            isMenu = true;
+                            isPlayerAlive = false;
+                            SDL_ShowCursor(SDL_ENABLE);
+                            break;
+                        }
+                        if (score > 10)
+                        {
+                            velEnemy = 2;
+                            velBullet = 11;
+                        }
+                        if (score > 20)
+                        {
+                            velEnemy = 3;
+                            velBullet = 12;
+                        }
                     }
+
+                    text.initText(fontText, "Score:" + to_string(score),40);
+                    text.creatText(fontText,renderer);
+                    SDL_RenderPresent(renderer);
+                    SDL_RenderClear(renderer);
                 }
-                if((checkCollision(enemies[i].getRect(), plane.getRectBullet())))
+                if (score > Score::getBestScore())
                 {
-                    Mix_PlayChannel(-1, expSound, 0);
-                    plane.clearBullet();
-                    vector<Explosion> exp;
-                    exp = explosion;
-                    for (int k = 0; k < 4; k++)
-                    {
-                        exp[k].setPos(enemies[i].getRect().x, enemies[i].getRect().y);
-                        exp[k].show(renderer);
-                    }
-                    score ++;
-                    enemies[i].resetPos();
-                    break;
-                }
-                if (enemies[i].getRect().y > SCREEN_HEIGHT)
-                {
-                    quit = true;
-                    isPlayerAlive = false;
-                    SDL_ShowCursor(SDL_ENABLE);
-                    break;
+                    Score::setBestScore(score);
                 }
             }
-            text.initText(fontText, "Score:" + to_string(score),40);
-            text.creatText(fontText,renderer);
-            SDL_RenderPresent(renderer);
+            if (quitGame.input(event))
+            {
+                isMenu = false;
+                isPlayerAlive = false;
+                break;
+            }
+            if (highScore.input(event))
+            {
+                bool isHighScore = true;
+                SDL_RenderCopy(renderer, backGround, NULL, NULL);
+                while (isHighScore)
+                {
+                    Text highScoreT;
+                    highScoreT.initText(fontText,"HIGH SCORE: " + to_string(Score::getBestScore()),40);
+                    highScoreT.setRect(200,100);
+                    highScoreT.setPos(SCREEN_WIDTH/2 - highScoreT.getRect().w/2,SCREEN_HEIGHT/2 - highScoreT.getRect().h/2);
+                    highScoreT.creatText(fontText, renderer);
+                    turnBack.show(renderer);
+                    SDL_RenderPresent(renderer);
+                    while(SDL_PollEvent(&event))
+                    {
+
+                        if(event.key.keysym.sym == SDLK_ESCAPE)
+                        {
+                            isHighScore = false;
+                            break;
+                        }
+                        else if (turnBack.input(event))
+                        {
+                            isHighScore = false;
+                            break;
+                        }
+                        else if(event.type == SDL_QUIT)
+                        {
+                            isHighScore = false;
+                            isMenu = false;
+                            break;
+                        }
+
+                    }
+                }
+                break;
+            }
+
         }
     }
-
     quitSDL(window, renderer);
     return 0;
 }

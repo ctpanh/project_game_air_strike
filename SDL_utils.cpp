@@ -43,16 +43,6 @@ void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
-void refresh_screen(const SDL_Rect& rect, SDL_Renderer* renderer)
-{
-    //Đặt màu đen, xóa toàn bộ màn hình về màu đen
-    SDL_SetRenderDrawColor(renderer,0,0,0,255);
-    SDL_RenderClear(renderer);
-
-    SDL_SetRenderDrawColor(renderer,255,255,255,255);
-    SDL_RenderFillRect(renderer,&rect);
-    SDL_RenderPresent(renderer);
-}
 
 SDL_Texture* loadTexture(SDL_Renderer* renderer, const string &path)
 {
