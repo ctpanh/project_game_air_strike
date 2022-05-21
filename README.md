@@ -28,7 +28,7 @@ Air Strike (bắn máy bay)
 	
 	+) Nhấp chuột trái để bắn đạn.
   
-- Cách cài đặt: Truy cập liên kết dưới tải file về, tùy theo máy mà tải bản 32 bit hoặc 64 bit. Chạy file main.exe để chơi game.
+- Cách cài đặt: Truy cập liên kết dưới tải file về. Chạy file main.exe để chơi game.
 
 https://drive.google.com/drive/folders/1-QiI-YFu0wHvgISmeyvWmxwI6WJs2L3X?usp=sharing
 
