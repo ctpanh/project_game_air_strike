@@ -9,10 +9,7 @@
 
 using namespace Utils;
 
-void constructor()
-{
 
-}
 
 int main(int argc, char* argv[])
 {
@@ -20,8 +17,7 @@ int main(int argc, char* argv[])
     initSDL(window, renderer);
 
     SDL_Texture* backGround = loadTexture(renderer, "Image/bg.png");
-    // Ve background chinh
-    constructor();
+    SDL_Texture* backGroundMenu = loadTexture(renderer, "Image/bgMenu.png");
 
     bool isPlayerAlive = true;
     bool isMenu = true;
@@ -48,7 +44,10 @@ int main(int argc, char* argv[])
     quitGame.setPos(SCREEN_WIDTH / 2 - quitGame.getRect().w / 2, SCREEN_HEIGHT / 2 + 3*quitGame.getRect().h/2 + 20);
     Button turnBack;
     turnBack.setImg(renderer,"Image/button_back.png");
-    turnBack.setPos(0,0);
+    turnBack.setPos(0,20);
+    Button reset;
+    reset.setImg(renderer,"Image/button_reset.png");
+    reset.setPos(SCREEN_WIDTH/2 - reset.getRect().w/2, SCREEN_HEIGHT/2 + reset.getRect().h/2 + 20);
 
     GameObject gameOver;
     gameOver.setImg(renderer, "Image/gameOver.png");
@@ -77,7 +76,7 @@ int main(int argc, char* argv[])
 
     while(isMenu)
     {
-        SDL_RenderCopy(renderer, backGround, NULL, NULL);
+        SDL_RenderCopy(renderer, backGroundMenu, NULL, NULL);
         Mix_HaltMusic();
         if(!Mix_PlayingMusic())
         {
@@ -243,21 +242,29 @@ int main(int argc, char* argv[])
             if (highScore.input(event))
             {
                 bool isHighScore = true;
-                SDL_RenderCopy(renderer, backGround, NULL, NULL);
+                SDL_RenderCopy(renderer, backGroundMenu, NULL, NULL);
                 while (isHighScore)
                 {
                     Text highScoreT;
-                    highScoreT.initText(fontText,"HIGH SCORE: " + to_string(Score::getBestScore()),40);
+                    highScoreT.initText(fontText,"HIGH SCORE: " + to_string(Score::getBestScore()),100);
                     highScoreT.setRect(200,100);
+                    highScoreT.setColor(3);
                     highScoreT.setPos(SCREEN_WIDTH/2 - highScoreT.getRect().w/2,SCREEN_HEIGHT/2 - highScoreT.getRect().h/2);
                     highScoreT.creatText(fontText, renderer);
                     turnBack.show(renderer);
+                    reset.show(renderer);
                     SDL_RenderPresent(renderer);
                     while(SDL_PollEvent(&event))
                     {
 
                         if(event.key.keysym.sym == SDLK_ESCAPE)
                         {
+                            isHighScore = false;
+                            break;
+                        }
+                        else if (reset.input(event))
+                        {
+                            Score::setBestScore(0);
                             isHighScore = false;
                             break;
                         }
@@ -272,7 +279,6 @@ int main(int argc, char* argv[])
                             isMenu = false;
                             break;
                         }
-
                     }
                 }
                 break;

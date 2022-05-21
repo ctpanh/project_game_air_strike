@@ -34,9 +34,15 @@ void Text::setColor(const int& type)
         text_color = color;
 
     }
-    else
+    else if (type == BLACK)
     {
         SDL_Color color = {0, 0, 0};
+        text_color = color;
+
+    }
+    else
+    {
+        SDL_Color color = {0, 255, 255};
         text_color = color;
     }
 }
