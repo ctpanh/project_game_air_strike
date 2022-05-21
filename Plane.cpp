@@ -1,6 +1,10 @@
 #include "Plane.h"
 
-Plane::Plane(SDL_Renderer* renderer) {
+Plane::Plane()
+{
+}
+
+Plane::initPlane(SDL_Renderer* renderer) {
     x = SCREEN_WIDTH/2;
     y = SCREEN_HEIGHT*3/4;
     setPos(x, y);

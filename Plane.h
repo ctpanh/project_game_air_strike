@@ -10,7 +10,8 @@ private:
     Mix_Chunk* bulletSound;
     Bullet bullet;
 public:
-    Plane(SDL_Renderer* renderer);
+    Plane();
+    initPlane(SDL_Renderer* renderer);
     ~Plane();
     void move(SDL_Event event);
     void update(SDL_Renderer* renderer);
