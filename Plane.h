@@ -15,7 +15,6 @@ public:
     ~Plane();
     void move(SDL_Event event);
     void update(SDL_Renderer* renderer);
-    Bullet getBullet();
     void clearBullet();
     SDL_Rect getRectBullet();
 };

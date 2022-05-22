@@ -56,6 +56,7 @@ void setBackState()
     // Tat hien thi chuot tren man hinh
     SDL_ShowCursor(SDL_DISABLE);
     plane.setPos(SCREEN_WIDTH/2, SCREEN_HEIGHT*3/4);
+    plane.clearBullet();
     for (int i = 0; i < 3; i++)
     {
         enemies[i].setPos(rand() % (SCREEN_WIDTH - enemies[i].getRect().w), -enemies[i].getRect().h);
